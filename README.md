@@ -27,14 +27,35 @@ Reduces Javascript size by stripping comments and newlines, and renaming identif
 A keyword exclusion list has to be supplied so the tool knows which identifiers may not be altered (e.g. "document", "window"). The supplied list is incomplete, and *this is likely to be your number one pitfall* when using this feature.
 
 ## Resource Support
-Allows embedding binary data (e.g. webassembly) and other resources (e.g. workers), using the //#resource directive. Example code on how to access resources and get them in various representations (url, blob, array, string) is supplied.
+Allows embedding binary data (e.g. webassembly) and other resources (e.g. workers), using the //#resource directive. Resources can be accessed using the template's *resourcemanager.js*, e.g.:
+
+    //#resource SYNTHBLOB output.wasm
+    //#resource SYNTHWORKLET synthworklet.min.js
+    
+    // returns a Uint8Array
+    getResourceArray(SYNTHBLOB)
+    // returns a resource url with that mime-type
+    getResourceUrl(SYNTHWORKLET, "application/javascript");
 
 ## PNG Compression 
-Everything is stored in a single png file to utilize its compression. Additional javascript payload is embedded as a plaintext comment in the png, which is executed by the browser when served with the right mime-type (or file extension).
+Everything is stored in a single png file to utilize its compression. Additional javascript payload is embedded as a plaintext comment in the png, which is executed by the browser when served with the right mime-type (or file extension). This first payload loads itself as an image, then reads and executes the rest of the javascript encoded in the image.
+
+Format is as follows:
+
+size | type
+---- | ----
+? | javascript
+1 | null terminator (0x00)
+? | resources 
+? | resource-table
+1 | resource count
+? | padding data (0xff)
+
+To read javascript from the png, simply read pixel data from the start until you encounter the null terminator (0x00). Check out template/resourcemanager.js to find out on how resources are read. 
 
 ## Webserver & Hot Reload
 The integrated webserver allows hot reloading whenever the content on disk changes. 
-Hot reloading is only available on Windows, but manual rebuilding can also be triggered in the browser.
+Hot reload is only available on Windows, but a rebuild can also be manually triggered in the browser.
 
 # Usage
     hermes.exe [-csrvxyz] [-server <port>] <input js file> <output html file>
@@ -53,6 +74,7 @@ Hot reloading is only available on Windows, but manual rebuilding can also be tr
 * Minifier does not support regular expressions
 * Final result might not work in Firefox, depending on unknown factors and hardware configuration. (getImageData returns wrong data)
 * PNG payload/decompression does not work with Edge.
+* no unicode
 
 # Compiling
 Use Lazarus to compile, e.g.:
