@@ -37,7 +37,11 @@ The integrated webserver allows hot reloading whenever the content on disk chang
 * PNG payload/decompression does not work with Edge.
 
 # Compiling
-Use FreePascal (3.x) / Lazarus to compile. No additional dependencies required. Only tested on Windows, although it *should* compile with other targets (with minor modifications).
+Use Lazarus to compile, e.g.:
+
+    lazbuild hermes.lpi
+
+No additional dependencies required. Only tested on Windows, although it *should* compile with other targets (with minor modifications).
 
 ## Compiling the WebAssembly example
     emcc fakesynth.c -Os -s WASM=1 -s "SIDE_MODULE=1" -s BINARYEN_TRAP_MODE=clamp -s TOTAL_MEMORY=268435456 -o output.wasm
