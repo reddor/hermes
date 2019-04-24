@@ -35,3 +35,13 @@ The integrated webserver allows hot reloading whenever the content on disk chang
 * Minifier does not support regular expressions
 * Final result might not work in Firefox, depending on unknown factors and hardware configuration. (getImageData returns wrong data)
 * PNG payload/decompression does not work with Edge.
+
+# Compiling
+Use FreePascal (3.x) / Lazarus to compile. No additional dependencies required. Only tested on Windows, although it *should* compile with other targets (with minor modifications).
+
+## Compiling the WebAssembly example
+    emcc fakesynth.c -Os -s WASM=1 -s "SIDE_MODULE=1" -s BINARYEN_TRAP_MODE=clamp -s TOTAL_MEMORY=268435456 -o output.wasm
+(tested with version 1.38.28)
+
+# Credits
+* http://www.ararat.cz/synapse/doku.php/start Arat Synapse for socket related things
