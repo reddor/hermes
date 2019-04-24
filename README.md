@@ -1,23 +1,40 @@
 # Hermes 
 
-Hermes is a collection of techniques with the goal to create a single file containing JavaScript & other resources, that runs in the browser. En detail:
+Hermes is a collection of techniques with the goal to create a single file containing JavaScript & other resources that runs in the browser. En detail:
 
 ## Preprocessor
-A simple pre-processor for file inclusion and conditionals. Supports DEFINE, UNDEFINE, IFDEF/ELSE/ENDIF, PRAGMA ONCE and INCLUDE. Preprocessor statements are prefixed with //# so they are treated as regular comments in normal environments.
+A simple pre-processor for file inclusion and conditionals. Preprocessor statements are prefixed with //# so they are treated as regular comments in normal environments.
+
+Available directives:
+* //#include [filename]
+* //#define [identifier] [value]
+* //#undefine [identifier]
+* //#ifdef/ifndef [identifier], //#else & //#endif 
+* //#export
+* //#resource [identifier] [filename]
+* //#pragma once (only include a file once)
+* //#pragma localscope (if file was included, wrap it in ({ ... })() so all declarations remain inside a local scope. Auto-enabled if at least one export exists)
+
+//#export is intended to make variables & methods in an include file publicly available, while putting the rest of the code inside a local scope. the //#export directive must be followed by either a *var* or a *function* declaration. As an additional bug/limitations, exported function declarations must be followed with a semicolon, e.g.:
+
+    //#export
+    function foobar() {
+        alert(42);
+    };
 
 ## Javascript Minifier
 Reduces Javascript size by stripping comments and newlines, and renaming identifiers.
-An keyword exclusion list has to be supplied so the tool knows which identifiers may not be altered (e.g. "document", "window"). The supplied list is incomplete, and this is likely to be your number one pitfall when using this feature.
+A keyword exclusion list has to be supplied so the tool knows which identifiers may not be altered (e.g. "document", "window"). The supplied list is incomplete, and *this is likely to be your number one pitfall* when using this feature.
 
 ## Resource Support
-Allows embedding binary data (e.g. webassembly) and other resources (e.g. workers). Example code on how to access resources and get them in various representations (url, blob, array, string) is supplied.
+Allows embedding binary data (e.g. webassembly) and other resources (e.g. workers), using the //#resource directive. Example code on how to access resources and get them in various representations (url, blob, array, string) is supplied.
 
 ## PNG Compression 
 Everything is stored in a single png file to utilize its compression. Additional javascript payload is embedded as a plaintext comment in the png, which is executed by the browser when served with the right mime-type (or file extension).
 
 ## Webserver & Hot Reload
 The integrated webserver allows hot reloading whenever the content on disk changes. 
-Hot reloading is only available on Windows, but a rebuilding can also be triggered in the browser.
+Hot reloading is only available on Windows, but manual rebuilding can also be triggered in the browser.
 
 # Usage
     hermes.exe [-csrvxyz] [-server <port>] <input js file> <output html file>
