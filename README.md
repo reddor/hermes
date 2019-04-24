@@ -16,7 +16,7 @@ Allows embedding binary data (e.g. webassembly) and other resources (e.g. worker
 Everything is stored in a single png file to utilize its compression. Additional javascript payload is embedded as a plaintext comment in the png, which is executed by the browser when served with the right mime-type (or file extension).
 
 ## Webserver & Hot Reload
-The integrated webserver allows hot reloading whenever the content on disk changes.
+The integrated webserver allows hot reloading whenever the content on disk changes. 
 
 # Usage
     hermes.exe [-csrvxyz] [-server <port>] <input js file> <output html file>
@@ -37,7 +37,11 @@ The integrated webserver allows hot reloading whenever the content on disk chang
 * PNG payload/decompression does not work with Edge.
 
 # Compiling
-Use FreePascal (3.x) / Lazarus to compile. No additional dependencies required. Only tested on Windows, although it *should* compile with other targets (with minor modifications).
+Use Lazarus to compile, e.g.:
+
+    lazbuild hermes.lpi
+
+No additional dependencies required. Windows/Linux tested, although it *should* compile for other targets as well. 
 
 ## Compiling the WebAssembly example
     emcc fakesynth.c -Os -s WASM=1 -s "SIDE_MODULE=1" -s BINARYEN_TRAP_MODE=clamp -s TOTAL_MEMORY=268435456 -o output.wasm
