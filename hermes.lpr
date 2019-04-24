@@ -328,8 +328,8 @@ begin
 {$IFDEF MSWINDOWS}
   result:=MonitorDirectory(ServerRoot, 100, 100, @AbortWatchCallback);
 {$ELSE}
-  while (not WantsRebuild) and not MonitorDirectory(ServerRoot, 100, 100) do
-  Sleep(50);
+  while (not WantsRebuild) do
+  Sleep(100);
 {$ENDIF}
   WantsRebuild:=False;
 end;
