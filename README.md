@@ -3,7 +3,7 @@
 Hermes is a collection of techniques with the goal to create a single file containing JavaScript & other resources, that runs in the browser. En detail:
 
 ## Preprocessor
-A simple pre-processor for file inclusion and conditionals. Supports DEFINE, UNDEFINE, IFDEF/ELSE/ENDIF, PRAGMA ONCE and INCLUDE. Preprocessor statements are prefixed with //# so they can be treated as  
+A simple pre-processor for file inclusion and conditionals. Supports DEFINE, UNDEFINE, IFDEF/ELSE/ENDIF, PRAGMA ONCE and INCLUDE. Preprocessor statements are prefixed with //# so they are treated as regular comments in normal environments.
 
 ## Javascript Minifier
 Reduces Javascript size by stripping comments and newlines, and renaming identifiers.
@@ -17,6 +17,7 @@ Everything is stored in a single png file to utilize its compression. Additional
 
 ## Webserver & Hot Reload
 The integrated webserver allows hot reloading whenever the content on disk changes. 
+Hot reloading is only available on Windows, but a rebuilding can also be triggered in the browser.
 
 # Usage
     hermes.exe [-csrvxyz] [-server <port>] <input js file> <output html file>
