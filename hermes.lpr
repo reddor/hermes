@@ -307,25 +307,32 @@ begin
   Client.Response.Header.Add('Cache-Control', 'no-cache');
 end;
 
-{$IFNDEF MSWINDOWS}
 var
   WantsRebuild: Boolean;
 
-function ClientData(Client: TWebsocketClientThread; const data: ansistring): Boolean;
+function ClientData({%H-}Client: TWebsocketClientThread; const data: ansistring): Boolean;
 begin
   result:=data='rebuild';
   if result then
     WantsRebuild:=True;
 end;
 
+function AbortWatchCallback: Boolean;
+begin
+  result:=not WantsRebuild;
+end;
+
 function WaitForRebuild: Boolean;
 begin
   result:=True;
-  while not WantsRebuild do
+{$IFDEF MSWINDOWS}
+  result:=MonitorDirectory(ServerRoot, 100, 100, @AbortWatchCallback);
+{$ELSE}
+  while (not WantsRebuild) and not MonitorDirectory(ServerRoot, 100, 100) do
   Sleep(50);
+{$ENDIF}
   WantsRebuild:=False;
 end;
-{$ENDIF}
 
 begin
   Processor:=TJSPreprocessor.Create;
@@ -362,11 +369,7 @@ begin
   if DoServe then
   begin
     ServerCallbacks.OnConnect:=@ClientConnect;
-{$IFDEF MSWINDOWS}
-    ServerCallbacks.OnData:=nil;
-{$ELSE}
     ServerCallbacks.OnData:=@ClientData;
-{$ENDIF}
     ServerCallbacks.OnDisconnect:=@ClientDisconnect;
     ServerCallbacks.OnRequest:=@ClientRequest;
     ServerCallbacks.OnServerStart:=nil;
@@ -383,12 +386,7 @@ begin
       Writeln('+------------------------------');
       Run;
       ServerClients.Broadcast('{"reload":true,"file":"' + OutputFile+'","size":'+IntToStr(LastFileSize)+'}');
-{$IFDEF MSWINDOWS}
-    until not MonitorDirectory(ServerRoot);
-    Error('Directory monitoring failed');
-{$ELSE}
     until not WaitForRebuild();
-{$ENDIF}
   end else
     Run;
 end.

@@ -69,5 +69,5 @@ __recovery/
 # vscode stuff
 *.vscode*
 
-backup/
-lib/
+backup/*
+lib/*

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CONFIG>
-  <Compiler Value="C:\lazarus\fpc\3.0.4\bin\x86_64-win64\fpc.exe" Date="1313019544"/>
-  <Params Value=" -Twin32 -Pi386 -MObjFPC -Scghi -CX -O3 -XX -l -vewnhibq -FiC:\Users\simon\source\repos\hermes\synapse -FiC:\Users\simon\source\repos\hermes\lib\i386-win32 -FuC:\Users\simon\source\repos\hermes\synapse -FuC:\lazarus\lcl\units\i386-win32 -FuC:\lazarus\components\lazutils\lib\i386-win32 -FuC:\lazarus\packager\units\i386-win32 -FuC:\Users\simon\source\repos\hermes\ -FUC:\Users\simon\source\repos\hermes\lib\i386-win32\ -FEC:\Users\simon\source\repos\hermes\ -oC:\Users\simon\source\repos\hermes\hermes.exe hermes.lpr"/>
-</CONFIG>

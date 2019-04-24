@@ -5,7 +5,14 @@ unit utils;
 interface
 
 uses
-  Classes, SysUtils;
+  {$IFDEF MSWINDOWS}
+  windows,
+  {$ENDIF}
+  Classes,
+  SysUtils;
+
+type
+  TMonitorAbortCallback = function: Boolean;
 
 function ReadFileString(Filename: ansistring): ansistring;
 function WriteFileString(Filename, Data: ansistring): Boolean;
@@ -13,18 +20,13 @@ function GetFileSize(AFilename: ansistring): Integer;
 procedure Error(Message: ansistring);
 
 {$IFDEF MSWINDOWS}
-function MonitorDirectory(ADirectory: ansistring; GracePeriod: Integer = 100): Boolean;
+function MonitorDirectory(ADirectory: ansistring; GracePeriod: Integer = 100; WaitTimeOut: DWORD = INFINITE; AbortCallback: TMonitorAbortCallback = nil): Boolean;
 {$ENDIF}
 
 var
   HaltOnError: Boolean = true;
 
 implementation
-
-{$IFDEF MSWINDOWS}
-uses
-  windows;
-{$ENDIF}
 
 function ReadFileString(Filename: ansistring): ansistring;
 var
@@ -64,7 +66,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-function MonitorDirectory(ADirectory: ansistring; GracePeriod: Integer = 100): Boolean;
+function MonitorDirectory(ADirectory: ansistring; GracePeriod: Integer = 100; WaitTimeOut: DWORD = INFINITE; AbortCallback: TMonitorAbortCallback = nil): Boolean;
 var
   Handle: THandle;
 begin
@@ -76,13 +78,28 @@ begin
   if Handle = INVALID_HANDLE_VALUE then
     Exit;
 
-  if WaitForSingleObject(Handle, INFINITE) = WAIT_OBJECT_0 then
-  begin
-    repeat
-      FindNextChangeNotification(Handle);
-    until WaitForSingleObject(Handle, GracePeriod) <> WAIT_OBJECT_0;
-    result:=True;
-  end;
+  repeat
+    case WaitForSingleObject(Handle, WaitTimeOut) of
+      WAIT_OBJECT_0:
+      begin
+        repeat
+          FindNextChangeNotification(Handle);
+        until WaitForSingleObject(Handle, GracePeriod) <> WAIT_OBJECT_0;
+        result:=True;
+        Break;
+      end;
+      WAIT_TIMEOUT:
+        if (not Assigned(AbortCallback)) or not AbortCallback() then
+        begin
+          result:=True;
+          Break;
+        end;
+      else begin
+        result:=False;
+        Break;
+      end;
+    end;
+  until False;
   FindCloseChangeNotification(Handle);
 end;
 {$ENDIF}
