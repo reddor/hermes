@@ -92,3 +92,4 @@ No additional dependencies required. Windows/Linux tested, although it *should* 
 
 # Credits
 * http://www.ararat.cz/synapse/doku.php/start Arat Synapse for socket related things
+* whoever came up with the png compression trick
