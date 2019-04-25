@@ -70,11 +70,14 @@ Hot reload is only available on Windows, but a rebuild can also be manually trig
              -y              reuse identifiers
 * -x and -y are experimental features and tend to make the end result bigger )
 
+## Getting started
+Duplicate the "template" directory and run watch.bat - then open http://127.0.0.1:8099 
+
 # Known bugs
-* Minifier does not support regular expressions
+* No support for regular expressions
 * Final result might not work in Firefox, depending on unknown factors and hardware configuration. (getImageData returns wrong data)
 * PNG payload/decompression does not work with Edge.
-* no unicode
+* No unicode
 
 # Compiling
 Use Lazarus to compile, e.g.:
